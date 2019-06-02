@@ -13,7 +13,6 @@ import time
 import infoGetter
 log_name = 'mail'
 default_sender = 'dian@hust.edu.cn'
-# default_password = 'Diannewsletter2017'
 default_host = 'mail.hust.edu.cn'
 default_port = 25
 mails_per_send = 50
