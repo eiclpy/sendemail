@@ -7,6 +7,7 @@ from flask_dropzone import Dropzone
 import time
 import multiprocessing
 from gevent.pywsgi import WSGIServer
+from config import listen, port
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -32,7 +33,7 @@ def dosend(fname):
     with open('retVal', 'w') as f:
         f.write(ret)
         f.flush()
-    sys.stdout.write('return : %s\n'%ret)
+    sys.stdout.write('return : %s\n' % ret)
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -74,5 +75,5 @@ def completed():
 
 
 if __name__ == '__main__':
-    http_server = WSGIServer(('0.0.0.0', 5000), app)
+    http_server = WSGIServer((listen, port), app)
     http_server.serve_forever()
