@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Email Sender</title>
+  <script language="JavaScript">
+    function myrefresh()
+    {
+    window.location.reload();
+    }
+    setTimeout('myrefresh()',10000);
+    </script>
+</head>
+<body>
+  <p>Send State: {{ sendStatus }}</p>
+  {% if sendStatus == 'Finish' %}
+  <p>Last Error Code: {{ errorcode }}</p>
+  <p>Log: </p>
+  {% for line in lines %}
+  <p>{{ line }}</p>
+  {% endfor %}
+  {% endif %}
+</body>
+</html>
