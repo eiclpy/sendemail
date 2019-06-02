@@ -224,7 +224,12 @@ def get(fname):
             return
         if slt[0] == 'emails':
             emails = excel()
-            emails.add(os.path.join(basedir, slt[1].strip()))
+            if '|' in slt[1].strip():
+                emailfname, sheetrange = slt[1].strip().split('|')
+                emails.add(os.path.join(basedir, emailfname), sheetrange)
+            else:
+                emailfname = slt[1].strip()
+                emails.add(os.path.join(basedir, emailfname))
             emails = emails.emails
         elif slt[0] == 'nickname':
             nickname = slt[1].strip()
