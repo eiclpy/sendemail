@@ -1,7 +1,9 @@
 # Install
-1. clone仓库
+1. clone仓库，创建文件夹
 ```bash
 git clone https://github.com/eiclpy/sendemail.git
+cd sendemail
+mkdir uploads logs
 ```
 2. 安装python3及pip3
 ```bash
