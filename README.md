@@ -17,3 +17,5 @@ pip3 install -r requirements.txt --user
 ```bash
 python3 main.py
 ```
+# Configure
+修改config.py中listen及port的值，默认端口5000
