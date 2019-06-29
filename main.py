@@ -4,6 +4,7 @@ import sys
 
 from flask import Flask, render_template, request
 from flask_dropzone import Dropzone
+from flask_httpauth import HTTPBasicAuth
 import time
 import multiprocessing
 from gevent.pywsgi import WSGIServer
@@ -12,6 +13,21 @@ from config import listen, port
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
+auth = HTTPBasicAuth()
+
+
+users = [
+    {'username': 'admin', 'password': 'DianEmailSender2019'}
+]
+
+
+@auth.get_password
+def get_password(username):
+    for user in users:
+        if user['username'] == username:
+            return user['password']
+    return None
+
 
 app.config.update(
     UPLOADED_PATH=os.path.join(basedir, 'uploads'),
@@ -36,26 +52,44 @@ def dosend(fname):
     sys.stdout.write('return : %s\n' % ret)
 
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/', methods=['GET'])
+def index():
+    return render_template('index.html')
+
+@app.route('/upload', methods=['POST'])
 def upload():
     global pros
     global last_ts
-    if request.method == 'POST':
-        if pros is not None and pros.is_alive():
-            return 'email is sending', 404
-        f = request.files.get('file')
-        fname = time.strftime('%Y-%m-%d-%H-%M-%S')
-        last_ts = fname
-        # fname = os.path.join(app.config['UPLOADED_PATH'], fname)
-        f.save(os.path.join(app.config['UPLOADED_PATH'], fname+'.zip'))
-        pros = multiprocessing.Process(target=dosend, args=(fname,))
-        pros.start()
+    if pros is not None and pros.is_alive():
+        return 'email is sending', 404
+    f = request.files.get('file')
+    fname = time.strftime('%Y-%m-%d-%H-%M-%S')
+    last_ts = fname
+    # fname = os.path.join(app.config['UPLOADED_PATH'], fname)
+    f.save(os.path.join(app.config['UPLOADED_PATH'], fname+'.zip'))
+    pros = multiprocessing.Process(target=dosend, args=(fname,))
+    pros.start()
 
     return render_template('index.html')
 
 
 @app.route('/completed')
 def completed():
+    global pros
+    global last_ts
+    retVal = 0
+    loginfo = ''
+    if pros is not None and pros.is_alive():
+        stat = 'Sending'
+    else:
+        stat = 'Finish'
+        with open('retVal', 'r') as f:
+            retVal = f.read()
+    return render_template('query.html', sendStatus=stat, errorcode=retVal, lines=loginfo.split('\n'))
+
+@app.route('/getlog')
+@auth.login_required
+def getlog():
     global pros
     global last_ts
     retVal = 0
@@ -75,5 +109,10 @@ def completed():
 
 
 if __name__ == '__main__':
+    if not os.path.exists('logs'):
+        os.makedirs('logs')
+    if not os.path.exists('uploads'):
+        os.makedirs('uploads')
+    
     http_server = WSGIServer((listen, port), app)
     http_server.serve_forever()

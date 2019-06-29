@@ -131,7 +131,7 @@ class Server():
         return self._login
 
     def __repr__(self):
-        return '<{} username:{} password:{} {}:{}>'.format(self.__class__.__name__, self.username, self.password, self.host, self.port)
+        return '<{} username:{} {}:{}>'.format(self.__class__.__name__, self.username, self.host, self.port)
 
     def _send_mails(self, reciver, msg):
         if not self.is_login():
