@@ -70,6 +70,7 @@ def upload():
 
 
 @app.route('/completed')
+@auth.login_required
 def completed():
     global pros
     global last_ts
