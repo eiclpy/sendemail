@@ -1,9 +1,8 @@
 # Install
-1. clone仓库，创建文件夹
+1. clone仓库
 ```bash
 git clone https://github.com/eiclpy/sendemail.git
 cd sendemail
-mkdir uploads logs
 ```
 2. 安装python3及pip3
 ```bash
@@ -19,3 +18,4 @@ python3 main.py
 ```
 # Configure
 修改config.py中listen及port的值，默认端口5000
+修改config.py中的username及password

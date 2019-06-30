@@ -8,17 +8,12 @@ from flask_httpauth import HTTPBasicAuth
 import time
 import multiprocessing
 from gevent.pywsgi import WSGIServer
-from config import listen, port
+from config import listen, port, users
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
 auth = HTTPBasicAuth()
-
-
-users = [
-    {'username': 'admin', 'password': 'DianEmailSender2019'}
-]
 
 
 @auth.get_password
@@ -57,6 +52,7 @@ def index():
     return render_template('index.html')
 
 @app.route('/upload', methods=['POST'])
+@auth.login_required
 def upload():
     global pros
     global last_ts
