@@ -194,10 +194,28 @@ class excel:
         #     os.path.basename(fname), ' '.join(map(lambda x: str(x+1), real_cols)) if real_cols else 'all'))
 
 
+def fixname(dir_name):
+    os.chdir(dir_name)
+    for temp_name in os.listdir('.'):
+        try:
+            new_name = temp_name.encode('cp437').decode("gbk")
+            os.rename(temp_name, new_name)
+            temp_name = new_name
+        except:
+            temp_name = temp_name.encode('utf-8').decode('utf-8')
+            os.rename(temp_name, new_name)
+            temp_name = new_name
+
+        if os.path.isdir(temp_name):
+            fixname(temp_name)
+    os.chdir('..')
+
+
 def get(fname):
     shutil.rmtree('./temp', ignore_errors=True)
     zf = zipfile.ZipFile(fname)
     zf.extractall('./temp')
+    fixname('./temp')
     dirlist = os.listdir('./temp')
     if 'config.txt' in dirlist:
         basedir = './temp'
