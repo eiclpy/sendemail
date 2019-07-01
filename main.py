@@ -48,6 +48,7 @@ def dosend(fname):
 
 
 @app.route('/', methods=['GET'])
+@auth.login_required
 def index():
     return render_template('index.html')
 
