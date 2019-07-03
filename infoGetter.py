@@ -6,6 +6,7 @@ import chardet
 import openpyxl
 import xlrd
 import zipfile
+from subprocess import call
 
 from email.mime.multipart import MIMEMultipart
 from email.utils import COMMASPACE
@@ -113,7 +114,7 @@ class excel:
     def handle_xlsx(self, ws):
         idx = None
         for i, cell in enumerate(next(ws.rows), 1):
-            if 'address' in cell.value.lower() or 'email' in cell.value.lower() or '邮箱' in cell.value:
+            if cell.value and ('address' in cell.value.lower() or 'email' in cell.value.lower() or '邮箱' in cell.value):
                 idx = i
                 break
         if not idx:
@@ -125,7 +126,7 @@ class excel:
     def handle_xls(self, ws):
         idx = None
         for i, cell in enumerate(ws.row_values(0)):
-            if 'address' in cell.lower() or 'email' in cell.lower() or '邮箱' in cell:
+            if cell and ('address' in cell.lower() or 'email' in cell.lower() or '邮箱' in cell):
                 idx = i
                 break
         if not idx:
@@ -197,15 +198,9 @@ class excel:
 def fixname(dir_name):
     os.chdir(dir_name)
     for temp_name in os.listdir('.'):
-        try:
-            new_name = temp_name.encode('cp437').decode("gbk")
-            os.rename(temp_name, new_name)
-            temp_name = new_name
-        except:
-            temp_name = temp_name.encode('utf-8').decode('utf-8')
-            os.rename(temp_name, new_name)
-            temp_name = new_name
-
+        if 'MACOS' in temp_name.upper():
+            shutil.rmtree(temp_name, ignore_errors=True)
+            continue
         if os.path.isdir(temp_name):
             fixname(temp_name)
     os.chdir('..')
@@ -213,9 +208,11 @@ def fixname(dir_name):
 
 def get(fname):
     shutil.rmtree('./temp', ignore_errors=True)
-    zf = zipfile.ZipFile(fname)
-    zf.extractall('./temp')
+    # zf = zipfile.ZipFile(fname)
+    # zf.extractall('./temp')
+    call(['unzip', fname, '-d', 'temp'])
     fixname('./temp')
+
     dirlist = os.listdir('./temp')
     if 'config.txt' in dirlist:
         basedir = './temp'
@@ -238,6 +235,7 @@ def get(fname):
         if len(line.strip()) <= 1:
             continue
         slt = line.split(':')
+        # print(slt)
         if len(slt) != 2:
             return
         if slt[0] == 'emails':
@@ -286,4 +284,4 @@ def get(fname):
 
 
 if __name__ == "__main__":
-    print(get('test.zip'))
+    print(get('uploads/2019-07-02-22-15-48.zip'))
