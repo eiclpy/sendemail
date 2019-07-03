@@ -240,11 +240,11 @@ def get(fname):
             return
         if slt[0] == 'emails':
             emails = excel()
-            if '|' in slt[1].strip():
+            if '|' in slt[1].strip() and 2 == len(slt[1].strip().split('|')) and slt[1].strip().split('|')[1]:
                 emailfname, sheetrange = slt[1].strip().split('|')
                 emails.add(os.path.join(basedir, emailfname), sheetrange)
             else:
-                emailfname = slt[1].strip()
+                emailfname = slt[1].strip().strip('|')
                 emails.add(os.path.join(basedir, emailfname))
             emails = emails.emails
         elif slt[0] == 'nickname':
@@ -284,4 +284,4 @@ def get(fname):
 
 
 if __name__ == "__main__":
-    print(get('uploads/2019-07-02-22-15-48.zip'))
+    print(get('uploads/2019-07-03-19-29-58.zip'))
