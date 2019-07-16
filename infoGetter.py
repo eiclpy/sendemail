@@ -210,7 +210,7 @@ def get(fname):
     shutil.rmtree('./temp', ignore_errors=True)
     # zf = zipfile.ZipFile(fname)
     # zf.extractall('./temp')
-    call(['unzip', fname, '-d', 'temp'])
+    call(['unzip', '-O', 'gbk', fname, '-d', 'temp'])
     fixname('./temp')
 
     dirlist = os.listdir('./temp')
