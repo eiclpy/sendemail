@@ -106,8 +106,8 @@ class excel:
                         self._email.append(each)
                     else:
                         self.error.append(each)
-            else:
-                self.double.append(each)
+                else:
+                    self.double.append(each)
             self._last = len(self._addrs)
         return [x[0] for x in self._email]
 
